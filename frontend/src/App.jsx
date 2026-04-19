@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = "http-://localhost:8000"; // Note: will be fixed to http in final run if needed
+const API_BASE = "http://localhost:8000"; 
 
 const App = () => {
   const [formData, setFormData] = useState({
@@ -219,9 +219,9 @@ const App = () => {
 
                     <div className="glass p-8">
                       <p className="text-dim text-sm font-semibold mb-2">PROBABILITY SCORE</p>
-                      <div className="flex items-end gap-3">
-                         <span className="text-5xl font-black gradient-text">{result.probability}%</span>
-                         <div className="flex-1 h-3 bg-white/5 rounded-full mb-3 overflow-hidden">
+                      <div className="flex items-end gap-3 w-full">
+                         <span className="text-5xl font-black gradient-text shrink-0">{result.probability}%</span>
+                         <div className="flex-1 h-3 bg-white/5 rounded-full mb-3 overflow-hidden min-w-[50px]">
                             <motion.div 
                               initial={{ width: 0 }}
                               animate={{ width: `${result.probability}%` }}
@@ -241,7 +241,7 @@ const App = () => {
                     </h3>
                     <p className="text-dim text-sm mb-6">These factors contributed most to your prediction result based on SHAP values.</p>
                     
-                    <div className="h-[300px] w-full">
+                    <div style={{ width: '100%', height: '350px' }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={result.all_factors}

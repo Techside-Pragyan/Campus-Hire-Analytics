@@ -69,11 +69,15 @@ def predict(data: StudentData):
                 # For RF in SHAP, values for class 1
                 node_shap = shap_values[1][0]
             elif isinstance(shap_values, np.ndarray) and len(shap_values.shape) == 3:
-                print(f"SHAP values array shape: {shap_values.shape}")
-                node_shap = shap_values[0][:, 1] # SHAP 0.45+ array format
+                print(f"SHAP values 3D array shape: {shap_values.shape}")
+                # (samples, features, classes) -> Get class 1 for first sample
+                node_shap = shap_values[0, :, 1]
+            elif isinstance(shap_values, np.ndarray) and len(shap_values.shape) == 2:
+                print(f"SHAP values 2D array shape: {shap_values.shape}")
+                node_shap = shap_values[0]
             else:
                 print(f"SHAP values direct shape: {getattr(shap_values, 'shape', 'no shape')}")
-                node_shap = shap_values[0]
+                node_shap = np.array(shap_values).flatten() 
         except Exception as se:
             print(f"SHAP Error: {se}")
             import traceback
