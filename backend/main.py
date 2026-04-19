@@ -59,15 +59,26 @@ def predict(data: StudentData):
         probability = model.predict_proba(features_scaled)[0][1]
         
         # SHAP explanation
-        shap_values = explainer.shap_values(features_scaled)
-        
-        # Depending on SHAP version, shap_values might be a list (for classification)
-        if isinstance(shap_values, list):
-            # For RF in SHAP, values for class 1
-            node_shap = shap_values[1][0]
-        else:
-            # New SHAP versions might return a single array for probability
-            node_shap = shap_values[0]
+        try:
+            shap_values = explainer.shap_values(features_scaled)
+            print(f"SHAP values type: {type(shap_values)}")
+            
+            # Depending on SHAP version and model, shap_values might be a list or array
+            if isinstance(shap_values, list):
+                print(f"SHAP values list length: {len(shap_values)}")
+                # For RF in SHAP, values for class 1
+                node_shap = shap_values[1][0]
+            elif isinstance(shap_values, np.ndarray) and len(shap_values.shape) == 3:
+                print(f"SHAP values array shape: {shap_values.shape}")
+                node_shap = shap_values[0][:, 1] # SHAP 0.45+ array format
+            else:
+                print(f"SHAP values direct shape: {getattr(shap_values, 'shape', 'no shape')}")
+                node_shap = shap_values[0]
+        except Exception as se:
+            print(f"SHAP Error: {se}")
+            import traceback
+            traceback.print_exc()
+            node_shap = np.zeros(len(feature_names)) # Fallback
 
         # Combine feature names with SHAP values
         insights = []
